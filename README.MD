@@ -1,5 +1,14 @@
 # Bilgisayarlı Görüye Giriş - Final Ödevi
 
+## Grup Üyeleri
+
+| İsim | Öğrenci No | GitHub |
+|------|-----------|--------|
+| Sefa Sunar | 24060772 | [@SefaSunar](https://github.com/SefaSunar) |
+| Bahadır Arabacı | 22060322 | [@BahadirArabaci](https://github.com/22060322b) |
+
+# Bilgisayarlı Görüye Giriş - Final Ödevi
+
 Bu repoda Bilgisayarlı Görüye Giriş dersinde yaptığımız üç farklı görüntü işleme uygulamasının kodları ve sonuçları yer almaktadır.
 
 ## Klasör Yapısı
