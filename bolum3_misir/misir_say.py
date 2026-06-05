@@ -13,13 +13,10 @@ if img is None:
     exit()
 
 img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
 
 mask_sari = cv2.inRange(hsv, np.array([8,  50, 80]),  np.array([32, 255, 240]))
-
 mask_bej  = cv2.inRange(hsv, np.array([15, 15, 110]), np.array([40, 60,  220]))
 misir_mask = cv2.bitwise_or(mask_sari, mask_bej)
 
@@ -35,6 +32,7 @@ misir_mask = cv2.morphologyEx(misir_mask, cv2.MORPH_OPEN,  k3, iterations=1)
 
 
 dist = ndimage.distance_transform_edt(misir_mask)
+
 coords = peak_local_max(dist, min_distance=28, labels=misir_mask)
 count = len(coords)
 

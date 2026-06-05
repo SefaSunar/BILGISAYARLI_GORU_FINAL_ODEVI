@@ -25,7 +25,6 @@ SECENEKLER = ['A', 'B', 'C', 'D', 'E']
 
 
 def perspektif_duzelt(img):
-    """Kağıdı arka plandan ayırır ve düzgün A4 dikdörtgenine çevirir"""
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (7, 7), 0)
     _, thresh = cv2.threshold(blurred, 100, 255, cv2.THRESH_BINARY)
@@ -51,7 +50,6 @@ def perspektif_duzelt(img):
 
 
 def ogr_no_oku(warped, result):
-    """Öğrenci numarasını optik formdan otomatik okur (8 haneli)"""
     gray = cv2.cvtColor(warped, cv2.COLOR_BGR2GRAY)
     y1, y2, x1, x2 = 240, 550, 60, 760
     bolge = gray[y1:y2, x1:x2]
@@ -60,7 +58,7 @@ def ogr_no_oku(warped, result):
     contours, _ = cv2.findContours(adaptive, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     daireler = []
-    for cnt in contours:
+    for cnt in contours:    
         area = cv2.contourArea(cnt)
         if area < 50 or area > 800: continue
         (cx, cy), r = cv2.minEnclosingCircle(cnt)
@@ -113,7 +111,6 @@ def ogr_no_oku(warped, result):
 
 
 def cevaplari_oku(warped, result, esik=110):
-    """Cevap baloncuklarını okur, dolu olanları tespit eder"""
     gray = cv2.cvtColor(warped, cv2.COLOR_BGR2GRAY)
     CVP_Y1, CVP_Y2 = 555, 985
     SOL_X1, SOL_X2 = 60, 390
@@ -163,7 +160,6 @@ def cevaplari_oku(warped, result, esik=110):
 
 
 def sonuc_hesapla(cevaplar, anahtar):
-    """Doğru/yanlış/boş sayar"""
     d = y_ = b = 0
     for s in range(1, 21):
         c = cevaplar.get(s)
@@ -174,7 +170,6 @@ def sonuc_hesapla(cevaplar, anahtar):
 
 
 def gorsel_olustur(result, isim, ogr_no, cevaplar, anahtar, dogru, yanlis, bos, net, idx):
-    """Her öğrenci için ayrı görsel oluşturur"""
     fig = plt.figure(figsize=(16, 11))
     fig.patch.set_facecolor('white')
 
@@ -252,9 +247,7 @@ plt.savefig("optik_cevap_anahtari.jpg", dpi=130, bbox_inches='tight', facecolor=
 plt.close()
 print("Cevap anahtari gorseli kaydedildi.")
 
-# ══════════════════════════════════════════════════════════
-# 2. ÖĞRENCİLERİ İŞLE
-# ══════════════════════════════════════════════════════════
+
 tum_sonuclar = []
 print("\n" + "="*65)
 print(f"{'Ad Soyad':<22} {'Ogr.No':^10} {'D':>4} {'Y':>4} {'B':>4} {'Net':>6}")
@@ -267,7 +260,6 @@ for idx, (dosya, isim, ogr_no_elle) in enumerate(DOSYALAR, 1):
     img = cv2.imread(dosya)
     warped = perspektif_duzelt(img)
     result = cv2.cvtColor(warped, cv2.COLOR_BGR2RGB).copy()
-
     ogr_no, result = ogr_no_oku(warped, result)
 
     cevaplar = cevaplari_oku(warped, result, esik=esik)

@@ -18,7 +18,6 @@ gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 blurred = cv2.GaussianBlur(gray, (7, 7), 0)
 
 _, thresh = cv2.threshold(blurred, 120, 255, cv2.THRESH_BINARY)
-
 k = np.ones((15, 15), np.uint8)
 closed = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, k, iterations=3)
 
@@ -55,7 +54,6 @@ rect[3] = pts[np.argmax(diff)] # sol-alt
 
 target_w, target_h = 794, 1123
 dst = np.array([[0, 0], [target_w, 0], [target_w, target_h], [0, target_h]], dtype=np.float32)
-
 M = cv2.getPerspectiveTransform(rect, dst)
 warped = cv2.warpPerspective(img, M, (target_w, target_h))
 warped_rgb = cv2.cvtColor(warped, cv2.COLOR_BGR2RGB)
