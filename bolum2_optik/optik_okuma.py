@@ -262,7 +262,7 @@ for idx, (dosya, isim, ogr_no_elle) in enumerate(DOSYALAR, 1):
     result = cv2.cvtColor(warped, cv2.COLOR_BGR2RGB).copy()
     ogr_no, result = ogr_no_oku(warped, result)
 
-    cevaplar = cevaplari_oku(warped, result, esik=esik)
+    cevaplar = cevaplari_oku(warped, result)
     dogru, yanlis, bos = sonuc_hesapla(cevaplar, CEVAP_ANAHTARI)
     net = round(dogru - yanlis / 4, 2)
     tum_sonuclar.append((isim, ogr_no, dogru, yanlis, bos, net))
