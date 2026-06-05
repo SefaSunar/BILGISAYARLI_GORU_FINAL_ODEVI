@@ -5,12 +5,9 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import os
 
-# ══════════════════════════════════════════════════════════
-# AYARLAR — Sadece burayı değiştir
-# ══════════════════════════════════════════════════════════
 CEVAP_ANAHTARI_DOSYA = "CevapAnahtari.jpeg"
 
-# Dosya adı, isim, öğrenci no (None = otomatik oku)
+
 DOSYALAR = [
     ("BerkayAnakli_22060372.jpeg",   "Berkay Anaklı",   None),
     ("BatuhanYilmaz_22060363.jpeg",  "Batuhan Yılmaz",  None),
@@ -26,9 +23,7 @@ DOSYALAR = [
 
 SECENEKLER = ['A', 'B', 'C', 'D', 'E']
 
-# ══════════════════════════════════════════════════════════
-# FONKSİYONLAR
-# ══════════════════════════════════════════════════════════
+
 def perspektif_duzelt(img):
     """Kağıdı arka plandan ayırır ve düzgün A4 dikdörtgenine çevirir"""
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -77,7 +72,7 @@ def ogr_no_oku(warped, result):
     if not daireler:
         return "00000000", result
 
-    # K-means ile 8 sütuna grupla
+    
     xs = np.array([d[0] for d in daireler], dtype=np.float32).reshape(-1, 1)
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.1)
     _, labels, centers = cv2.kmeans(xs, 8, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
@@ -224,9 +219,7 @@ def gorsel_olustur(result, isim, ogr_no, cevaplar, anahtar, dogru, yanlis, bos, 
     print(f"  -> optik_ogr_{idx:02d}.jpg kaydedildi")
 
 
-# ══════════════════════════════════════════════════════════
-# 1. CEVAP ANAHTARINI FORMDAN OKU
-# ══════════════════════════════════════════════════════════
+
 print("Cevap anahtari okunuyor...")
 img_ca = cv2.imread(CEVAP_ANAHTARI_DOSYA)
 if img_ca is None:
@@ -238,7 +231,7 @@ result_ca = cv2.cvtColor(warped_ca, cv2.COLOR_BGR2RGB).copy()
 CEVAP_ANAHTARI = cevaplari_oku(warped_ca, result_ca)
 print(f"Cevap anahtari: {CEVAP_ANAHTARI}")
 
-# Cevap anahtarı görseli
+
 fig = plt.figure(figsize=(16, 11))
 fig.patch.set_facecolor('white')
 ax = fig.add_axes([0.01, 0.05, 0.55, 0.90])
@@ -275,26 +268,7 @@ for idx, (dosya, isim, ogr_no_elle) in enumerate(DOSYALAR, 1):
     warped = perspektif_duzelt(img)
     result = cv2.cvtColor(warped, cv2.COLOR_BGR2RGB).copy()
 
-    # Revas icin esigi biraz gevset
-    esik = 118 if ogr_no_elle == "22060396" else 110
-
-    if ogr_no_elle:
-        # Elle girilen numara — sadece görsel için baloncukları çiz
-        ogr_no = ogr_no_elle
-        gray_t = cv2.cvtColor(warped, cv2.COLOR_BGR2GRAY)
-        y1, y2, x1, x2 = 240, 550, 60, 760
-        adp = cv2.adaptiveThreshold(gray_t[y1:y2, x1:x2], 255,
-            cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 21, 4)
-        cnts, _ = cv2.findContours(adp, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        for cnt in cnts:
-            area = cv2.contourArea(cnt)
-            if area < 50 or area > 800: continue
-            (cx, cy), r = cv2.minEnclosingCircle(cnt)
-            cx, cy, r = int(cx)+x1, int(cy)+y1, int(r)
-            if r > 0 and area / (np.pi * r * r) > 0.55:
-                cv2.circle(result, (cx, cy), r, (0, 180, 0), 2)
-    else:
-        ogr_no, result = ogr_no_oku(warped, result)
+    ogr_no, result = ogr_no_oku(warped, result)
 
     cevaplar = cevaplari_oku(warped, result, esik=esik)
     dogru, yanlis, bos = sonuc_hesapla(cevaplar, CEVAP_ANAHTARI)
@@ -305,9 +279,6 @@ for idx, (dosya, isim, ogr_no_elle) in enumerate(DOSYALAR, 1):
 
 print("="*65)
 
-# ══════════════════════════════════════════════════════════
-# 3. ÖZET TABLO
-# ══════════════════════════════════════════════════════════
 fig, ax = plt.subplots(figsize=(13, 6))
 ax.axis('off')
 veri = [[str(i+1), ad, no, str(d), str(y), str(b), str(n)]

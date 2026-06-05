@@ -4,8 +4,8 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
-# ── Resmi yükle ───────────────────────────────────────────
-img = cv2.imread("evrak.jpg")  # fotoğrafının adını buraya yaz
+
+img = cv2.imread("evrak.jpg")  
 if img is None:
     print("HATA: Fotoğraf bulunamadı! 'evrak.jpg' dosyasının bu klasörde olduğuna emin ol.")
     exit()
@@ -13,7 +13,7 @@ if img is None:
 img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 h, w = img.shape[:2]
 
-# ── 1. ADIM: Maskeleme — kağıdı arka plandan ayır ─────────
+
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 blurred = cv2.GaussianBlur(gray, (7, 7), 0)
 
@@ -29,11 +29,11 @@ mask = np.zeros((h, w), dtype=np.uint8)
 cv2.drawContours(mask, [biggest], -1, 255, -1)
 masked = cv2.bitwise_and(img_rgb, img_rgb, mask=mask)
 
-# ── 2. ADIM: Kontrast iyileştirme ─────────────────────────
+
 enhanced_rgb = masked.copy()
 enhanced_rgb[mask == 0] = [255, 255, 255]
 
-# ── 3. ADIM: Köşe tespiti ve perspektif düzeltme ──────────
+
 epsilon = 0.02 * cv2.arcLength(biggest, True)
 approx = cv2.approxPolyDP(biggest, epsilon, True)
 print(f"Tespit edilen köşe sayısı: {len(approx)}")
@@ -70,10 +70,10 @@ for pt in rect:
     cv2.circle(corners_img, (int(pt[0]), int(pt[1])), 20, (255, 0, 0), -1)
 cv2.polylines(corners_img, [rect.astype(int)], True, (255, 0, 0), 4)
 
-# ── Görselleştir ──────────────────────────────────────────
+
 fig, axes = plt.subplots(2, 3, figsize=(18, 13))
 
-# Üst orta başlık — suptitle yerine fig.text kullan, çakışmasın
+
 fig.text(0.5, 0.98, "1. BÖLÜM — Evrak İşleme",
          fontsize=16, fontweight='bold', ha='center', va='top')
 
@@ -101,7 +101,7 @@ axes[1, 2].imshow(warped_binary, cmap='gray')
 axes[1, 2].set_title("Adım 6: Kontrast İyileştirme (CLAHE + Otsu)", fontsize=11, fontweight='bold', pad=8)
 axes[1, 2].axis('off')
 
-plt.tight_layout(rect=[0, 0, 1, 0.96])  # üstte başlık için boşluk bırak
+plt.tight_layout(rect=[0, 0, 1, 0.96])  
 plt.savefig("evrak_sonuc.jpg", dpi=150, bbox_inches='tight')
 cv2.imwrite("evrak_duzeltilmis.jpg", warped)
 
